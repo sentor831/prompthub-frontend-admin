@@ -8,9 +8,9 @@
                             <h4 class="card-title">作品详情</h4>
                         </template>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-6">
                                 <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
-                                    style="cursor: pointer; width: 70vh" />
+                                    style="cursor: pointer; width: 100%" />
                             </div>
                             <div class="col-6">
                                 <p>上传者</p>
@@ -57,23 +57,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="comments" style="margin-top:5vh">
-                            <div class="row">
+                        <div class="comments col" style="margin-top: 1%;">
+                            <div class="row" style="width: 100%;">
                                 <el-button type="danger">批量删除</el-button>
                                 <el-input class="input" placeholder="关键字" v-model="keyword"
-                                    style="margin-left: 5vh; width: 40vh;">
+                                    style="margin-left: 3em; width: 30%;">
                                     <el-button slot="append" icon="el-icon-search"></el-button>
                                 </el-input>
                             </div>
                             <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark"
-                                style="width: 100%; margin-top:3vh" @selection-change="handleSelectionChange">
+                                style="width: 100%; margin-top: 2em; margin-left: 0"
+                                @selection-change="handleSelectionChange">
                                 <el-table-column type="selection" width="55">
                                 </el-table-column>
-                                <el-table-column prop="username" label="用户名" width="200" show-overflow-tooltip>
+                                <el-table-column prop="user.nickname" label="评论者昵称" width="200" show-overflow-tooltip>
                                 </el-table-column>
                                 <el-table-column prop="content" label="评论内容" width="550" show-overflow-tooltip>
                                 </el-table-column>
-                                <el-table-column prop="time" label="评论时间">
+                                <el-table-column prop="created_at" label="评论时间">
                                     <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
                                 </el-table-column>
                                 <el-table-column label="操作">
@@ -94,6 +95,7 @@
 
 <script>
 import ElementUI from 'element-ui';
+import { get_comment_list } from '../api';
 export default {
     name: 'workinfo',
     components: {
@@ -108,14 +110,25 @@ export default {
             width: '120',
             height: '240',
             others: 'some json wwwww wwwwwwwww wwwwwwwwwww wwwwwwww,wwwwwwwwwwww,wwwwwwwwwwwww wwwwwwwwwww, wwwwwwwwwwww,wwwwwwwwwww wwwwwww,wwwwwwwwwwww,wwwwww,wwww,wwwwwwwwwww,wwwwwwww wwwwwww,wwwwwwww wwwwwwwwww,wwwwww wwwwwwww,wwwww wwwwwwwwww,wwwwwwww www',
-            tableData: [{
-                username: 'www',
-                content: '??',
-                time: '2023'
-            }]
+            tableData: [],
+            picid: -1,
         }
     },
+    mounted() {
+        this.picid = this.$route.query.picid;
+    },
     methods: {
+        getComment() {
+            get_comment_list(this.picid)
+                .then((res) => {
+                    this.tableData = res.data.comment_list
+
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+        },
         handleDelete(index, row) {
             console.log(index, row);
         }

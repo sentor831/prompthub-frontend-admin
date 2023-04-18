@@ -8,7 +8,7 @@
                             <h4 class="card-title">待审核作品</h4>
                         </template>
                         <template>
-                            <el-table :data="table.data" stripe>
+                            <el-table :data="tableData" stripe>
                                 <el-table-column prop="id" label="ID" width="80">
                                 </el-table-column>
                                 <el-table-column prop="picture" label="缩略图" width="200">
@@ -17,9 +17,9 @@
                                             style="margin-left:0; padding: 1vh" />
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="uploader" label="上传者用户名">
+                                <el-table-column prop="uploader.nickname" label="上传者昵称">
                                 </el-table-column>
-                                <el-table-column prop="uploadtime" label="上传时间">
+                                <el-table-column prop="created_at" label="上传时间">
                                 </el-table-column>
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
@@ -33,7 +33,8 @@
                 </div>
             </div>
             <div class="block" style="text-align: center">
-                <el-pagination layout="prev, pager, next" :total="50">
+                <el-pagination layout="prev, pager, next" :current-page="currentPage" :page-size="pageSize"
+                    @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
         </div>
@@ -42,36 +43,51 @@
 
 
 <script>
-
+import { get_audit_record_list } from '../api'
+import Card from 'src/components/Cards/Card.vue'
 let tableData = [{
     id: 1,
     picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-    uploader: 'hyf',
-    uploadtime: '2023.01.02 12:34:56',
+    uploader: {
+        nickname: 'hyf'
+    },
+    created_at: '2023.01.02 12:34:56',
 }]
 export default {
     name: 'uncheck',
     components: {
-
+        Card
     },
     data() {
         return {
-            table: {
-                data: []
-            }
+            currentPage: 1,
+            pageSize: 10,
+            tableData: tableData,
         }
     },
     mounted() {
-        this.getData();
+        this.getUnchecks()
     },
     methods: {
-        getData() {
-            this.data = [...tableData]
+        getUnchecks() {
+            // TODO: status是什么意思
+            get_audit_record_list(this.pageSize, this.currentPage, status)
+                .then((res) => {
+                    this.tableData = res.data.audit_record_list
+
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '获取待审核作品列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage
+            this.getUnchecks()
         },
         handleLook(index, row) {
             console.log(index, row);
-            // TODO 设置query, cookies
-            this.$router.push({ path: '/admin/uncheck/info', query: { picid: this.index } })
+            this.$router.push({ path: '/admin/uncheck/info', query: { picid: row.id } })
         }
     }
 }

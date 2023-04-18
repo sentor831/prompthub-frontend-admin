@@ -8,9 +8,9 @@
                             <h4 class="card-title">待审核作品详情</h4>
                         </template>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-6">
                                 <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
-                                    style="cursor: pointer; width: 70vh" />
+                                    style="cursor: pointer; width: 100%" />
                             </div>
                             <div class="col-6">
                                 <p>上传者</p>
@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { audit_prompt } from '../api';
 export default {
     name: 'workinfo',
     components: {
@@ -111,13 +112,29 @@ export default {
                 reason: [
                     { required: true, message: '请填写拒绝理由', trigger: 'blur' }
                 ]
-            }
+            },
+            picid: -1,
         }
+    },
+    mounted() {
+        this.picid = this.$route.query.picid
     },
     methods: {
         handlePass() {
-            this.$message({ type: 'success', message: '已通过' });
-            this.$router.push('/admin/uncheck')
+            audit_prompt({
+                id: this.picid,
+                passed: true,
+                content: '通过'
+            })
+                .then((res) => {
+                    this.$message({ type: 'success', message: '已通过' });
+                    this.$router.push('/admin/uncheck')
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Notification({ title: '审核失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                })
+
         },
         handleReject() {
             this.dialogVisible = true;
@@ -125,9 +142,20 @@ export default {
         confirmReject(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // TODO
-                    this.$message({ type: 'success', message: '已拒绝' })
-                    this.$router.push('/admin/uncheck')
+                    audit_prompt({
+                        id: this.picid,
+                        passed: false,
+                        content: '不通过' + this.ruleForm.reason
+                    })
+                        .then((res) => {
+                            this.$message({ type: 'success', message: '已拒绝' })
+                            this.$router.push('/admin/uncheck')
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '审核失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+
                 }
             });
 

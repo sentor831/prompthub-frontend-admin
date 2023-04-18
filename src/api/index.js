@@ -14,58 +14,62 @@ export const refreshTokenReq = (refreshToken) => {
 
 const axioss = new HttpRequest('')
 
-// =======================> 用户 API
+// =======================> 管理员 API
 // 登录
 export const login = (params) => {
     return axioss.request({
-        url: `/api/auth/user_obtain_token`,
+        url: `/api/auth/admin_obtain_token`,
         data: params,
         method: 'post'
     })
 }
 
-// 发送邮件
-export const sendRegisterEmail = (params) => {
+// 获取用户列表
+export const get_user_list = (per_page, page_index) => {
     return axioss.request({
-        url: `/api/user/sign_up`,
-        data: params,
-        method: 'post'
+        url: `/api/admin/get_user_list?per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
 }
 
-// 注册
-export const register = (params) => {
+// 获取作品列表
+export const get_prompt_list = (per_page, page_index) => {
     return axioss.request({
-        url: `/api/user/confirm_and_create`,
-        data: params,
-        method: 'put'
+        url: `/api/admin/get_prompt_list?per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
 }
 
-// 忘记密码发送邮件
-export const sendForgetPassEmail = (params) => {
+// 获取待审核作品列表
+export const get_audit_record_list = (per_page, page_index, status) => {
     return axioss.request({
-        url: `/api/user/confirm_and_create`,
-        data: params,
-        method: 'post'
+        url: `/api/admin/get_audit_record_list?per_page=${per_page}&page_index=${page_index}&status=${status}`,
+        method: 'get'
     })
 }
 
-// 修改忘记的密码
-export const modifyForgetPass = (params) => {
+// 审核作品
+export const audit_prompt = (params) => {
     return axioss.request({
-        url: `/api/user/confirm_forget_password`,
-        data: params,
-        method: 'put'
+        url: `/api/admin/audit_prompt`,
+        method: 'get',
+        data: params
     })
 }
 
-// 修改密码
-export const modifyPass = (params) => {
+// 获取评论列表
+export const get_comment_list = (prompt_id, per_page, page_index) => {
     return axioss.request({
-        url: `api/user/change_password`,
-        data: params,
-        method: 'post'
+        url: `/api/admin/get_comment_list?prompt_id=${prompt_id}&per_page=${per_page}&page_index=${page_index}`,
+        method: 'get'
     })
+}
 
+// 删除评论
+export const delete_comment = (params) => {
+    return axioss.request({
+        url: `api/admin/delete_comment`,
+        method: 'delete',
+        data: params
+    })
 }

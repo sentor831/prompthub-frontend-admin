@@ -29,11 +29,6 @@ const routes = [
     redirect: '/admin/users',
     children: [
       {
-        path: 'overview',
-        name: 'Overview',
-        component: Overview
-      },
-      {
         path: 'user',
         name: 'User',
         component: UserProfile
@@ -67,31 +62,6 @@ const routes = [
         path: 'uncheck/info',
         name: 'UncheckInfo',
         component: UncheckInfo
-      },
-      {
-        path: 'typography',
-        name: 'Typography',
-        component: Typography
-      },
-      {
-        path: 'icons',
-        name: 'Icons',
-        component: Icons
-      },
-      {
-        path: 'maps',
-        name: 'Maps',
-        component: Maps
-      },
-      {
-        path: 'notifications',
-        name: 'Notifications',
-        component: Notifications
-      },
-      {
-        path: 'upgrade',
-        name: 'Upgrade to PRO',
-        component: Upgrade
       }
     ]
   },

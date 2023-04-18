@@ -18,6 +18,7 @@ import VueRouter from "vue-router";
 import App from "./App.vue";
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import cookie from './utils/cookie';
 
 // LightBootstrap plugin
 import LightBootstrap from "./light-bootstrap-main";
@@ -30,6 +31,8 @@ import "./registerServiceWorker";
 Vue.use(VueRouter);
 Vue.use(LightBootstrap);
 Vue.use(ElementUI)
+
+Vue.prototype.cookie = cookie;
 
 // configure router
 const router = new VueRouter({
