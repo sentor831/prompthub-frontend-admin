@@ -150,9 +150,19 @@ export default {
 
         },
         handleDelete(index, row) {
-            delete_comment(row.id)
+            delete_comment({
+                comment_id: row.id
+            })
                 .then((res) => {
+                    get_comment_list(this.picid, 10, 1)
+                        .then((res) => {
+                            this.tableData = res.data.comment_list
 
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
                 })
                 .catch((err) => {
                     console.log(err)

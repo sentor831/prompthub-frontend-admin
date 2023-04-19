@@ -74,6 +74,7 @@ export default {
             get_prompt_list(this.pageSize, this.currentPage)
                 .then((res) => {
                     this.tableData = res.data.prompt_list
+                    this.totalNum = res.data.prompt_num
                     console.log(this.totalNum)
                 })
                 .catch((err) => {

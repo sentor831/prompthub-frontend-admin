@@ -17,7 +17,7 @@ const axioss = new HttpRequest('')
 // =======================> 管理员 API
 // 登录
 export const login = (params) => {
-    return axioss.request({
+    return axios.request({
         url: `/api/auth/admin_obtain_token`,
         data: params,
         method: 'post'

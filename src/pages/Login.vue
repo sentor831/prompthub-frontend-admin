@@ -19,7 +19,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button type="submit" class="btn btn-primary" @click="handleLogin()">登 录</button>
+                        <button type="button" class="btn btn-primary" @click="handleLogin()">登 录</button>
                     </div>
                 </form>
 
@@ -60,13 +60,7 @@ export default {
                         console.log(res)
                         setToken(res.data.access_token)
                         setRefreshToken(res.data.refresh_token)
-                        let loginInfo = {
-                            // TODO?
-                        }
-                        this.cookie.setCookie(loginInfo, 1)
-
                         this.$router.push('/admin/users')
-
                         Notification({ title: '登录成功', message: '欢迎您！', type: 'success', duration: 2000 })
                     })
                     .catch((err) => {

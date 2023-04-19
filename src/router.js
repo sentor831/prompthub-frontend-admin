@@ -1,3 +1,6 @@
+import Vue from 'vue';
+import Router from 'vue-router';
+
 import DashboardLayout from 'src/layout/DashboardLayout.vue'
 // GeneralViews
 import NotFound from 'src/pages/NotFoundPage.vue'
@@ -18,9 +21,14 @@ import Uncheck from 'src/pages/Uncheck.vue'
 import WorkInfo from 'src/pages/WorkInfo.vue'
 import UncheckInfo from 'src/pages/UncheckInfo.vue'
 
-const routes = [
+Vue.use(Router);
+
+export default new Router({
+  linkExactActiveClass: 'active',
+  routes : [
   {
     path: '/',
+    name: "login",
     component: Login,
   },
   {
@@ -28,16 +36,6 @@ const routes = [
     component: DashboardLayout,
     redirect: '/admin/users',
     children: [
-      {
-        path: 'user',
-        name: 'User',
-        component: UserProfile
-      },
-      {
-        path: 'table-list',
-        name: 'Table List',
-        component: TableList
-      },
       {
         path: 'users',
         name: 'Users',
@@ -66,15 +64,5 @@ const routes = [
     ]
   },
   { path: '*', component: NotFound }
-]
-
-/**
- * Asynchronously load view (Webpack Lazy loading compatible)
- * The specified component must be inside the Views folder
- * @param  {string} name  the filename (basename) of the view to load.
-function view(name) {
-   var res= require('../components/Dashboard/Views/' + name + '.vue');
-   return res;
-};**/
-
-export default routes
+  ]
+});

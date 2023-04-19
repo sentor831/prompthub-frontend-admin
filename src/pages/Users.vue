@@ -110,7 +110,8 @@ export default {
       get_user_list(this.pageSize, this.currentPage)
         .then((res) => {
           this.tableData = res.data.user_list
-          console.log(this.tableData)
+          this.totalNum = res.data.user_num
+          console.log(res)
         })
         .catch((err) => {
           console.log(err)
