@@ -9,15 +9,15 @@
                         </template>
                         <template>
                             <el-table :data="tableData" stripe>
-                                <el-table-column prop="id" label="ID" width="80">
+                                <el-table-column prop="prompt.id" label="ID" width="80">
                                 </el-table-column>
-                                <el-table-column prop="picture" label="缩略图" width="200">
+                                <el-table-column prop="prompt.picture" label="缩略图" width="200">
                                     <template slot-scope="scope">
-                                        <img :src="scope.row.picture" width="100" height="100"
+                                        <img :src="scope.row.prompt.picture" width="100" height="100"
                                             style="margin-left:0; padding: 1vh" />
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="uploader.nickname" label="上传者昵称">
+                                <el-table-column prop="user.nickname" label="上传者昵称">
                                 </el-table-column>
                                 <el-table-column prop="created_at" label="上传时间">
                                 </el-table-column>
@@ -71,10 +71,10 @@ export default {
     methods: {
         getUnchecks() {
             // TODO: status是什么意思
-            get_audit_record_list(this.pageSize, this.currentPage, status)
+            get_audit_record_list(this.pageSize, this.currentPage, 2)
                 .then((res) => {
                     this.tableData = res.data.audit_record_list
-
+                    console.log(this.tableData)
                 })
                 .catch((err) => {
                     console.log(err)
