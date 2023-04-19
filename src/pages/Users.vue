@@ -16,9 +16,9 @@
               <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" stripe>
                 <el-table-column prop="id" label="ID" width="100">
                 </el-table-column>
-                <el-table-column prop="avator" label="头像" width="200">
+                <el-table-column prop="avatar" label="头像" width="200">
                   <template slot-scope="scope">
-                    <img :src="scope.row.avator" width="100" height="100" style="margin-left:0; padding: 1vh" />
+                    <img :src="scope.row.avatar" width="100" height="100" style="margin-left:0; padding: 1vh" />
                   </template>
                 </el-table-column>
                 <!-- <el-table-column prop="email" label="邮箱">
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="block" style="text-align: center">
-        <el-pagination layout="prev, pager, next" :current-page="currentPage" :page-size="pageSize"
+        <el-pagination layout="prev, pager, next" :total="totalNum" :current-page="currentPage" :page-size="pageSize"
           @current-change="handleCurrentChange">
         </el-pagination>
       </div>
@@ -45,46 +45,46 @@ import LTable from 'src/components/Table.vue'
 import Card from 'src/components/Cards/Card.vue'
 import { get_user_list } from '../api'
 import { Notification } from 'element-ui'
-let tableData = [{
-  id: 1,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice'
-},
-{
-  id: 2,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice'
-},
-{
-  id: 3,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice3'
-},
-{
-  id: 4,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice4'
-},
-{
-  id: 5,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice5'
-},
-{
-  id: 6,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice6'
-},
-{
-  id: 7,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice7'
-},
-{
-  id: 8,
-  avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-  nickname: 'Dakota Rice'
-}]
+// let tableData = [{
+//   id: 1,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice'
+// },
+// {
+//   id: 2,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice'
+// },
+// {
+//   id: 3,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice3'
+// },
+// {
+//   id: 4,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice4'
+// },
+// {
+//   id: 5,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice5'
+// },
+// {
+//   id: 6,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice6'
+// },
+// {
+//   id: 7,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice7'
+// },
+// {
+//   id: 8,
+//   avator: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
+//   nickname: 'Dakota Rice'
+// }]
 export default {
   components: {
     // LTable,
@@ -94,21 +94,23 @@ export default {
     return {
       currentPage: 1,
       pageSize: 10,
-      tableData: tableData,
+      // TODO 
+      totalNum: 100,
+      tableData: [],
       // table: {
       //   data: [...tableData]
       // },
     }
   },
   mounted() {
-    // this.getUsers()
+    this.getUsers()
   },
   methods: {
     getUsers() {
       get_user_list(this.pageSize, this.currentPage)
         .then((res) => {
           this.tableData = res.data.user_list
-
+          console.log(this.tableData)
         })
         .catch((err) => {
           console.log(err)

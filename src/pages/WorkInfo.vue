@@ -9,8 +9,7 @@
                         </template>
                         <div class="row">
                             <div class="col-6">
-                                <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
-                                    style="cursor: pointer; width: 100%" />
+                                <img :src=pic style="cursor: pointer; width: 100%" />
                             </div>
                             <div class="col-6">
                                 <p>上传者</p>
@@ -95,7 +94,8 @@
 
 <script>
 import ElementUI from 'element-ui';
-import { get_comment_list } from '../api';
+import { get_comment_list, get_prompt, delete_comment } from '../api';
+import { Notification } from 'element-ui'
 export default {
     name: 'workinfo',
     components: {
@@ -103,6 +103,8 @@ export default {
     },
     data() {
         return {
+            pic: '',
+            uploaderId: -1,
             uploader: 'haha',
             uploadtime: '2023.3.11 13:25:11',
             prompt: 'funny, good, bad, building, tall, night, lights, amazing, what, strange, weird, boring, interesting, surprising',
@@ -116,20 +118,46 @@ export default {
     },
     mounted() {
         this.picid = this.$route.query.picid;
+        this.getPicInfo()
     },
     methods: {
-        getComment() {
-            get_comment_list(this.picid)
+        getPicInfo() {
+            // TODO
+            get_prompt(this.picid)
                 .then((res) => {
-                    this.tableData = res.data.comment_list
+                    console.log(res)
+                    this.pic = res.data.prompt.picture
+                    this.uploaderId = res.data.prompt.uploader.id
+                    this.uploader = res.data.prompt.uploader.nickname
+                    this.uploadtime = res.data.prompt.created_at
+                    this.hasFollowed = res.data.is_following
+                    this.prompt = res.data.prompt.prompt
+                    this.model = res.data.prompt.model
+                    this.width = res.data.prompt.width
+                    this.height = res.data.prompt.height
+                    this.others = res.data.prompt.prompt_attribute
+                    get_comment_list(this.picid, 10, 1)
+                        .then((res) => {
+                            this.tableData = res.data.comment_list
+
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                            Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                        })
+
+                })
+
+        },
+        handleDelete(index, row) {
+            delete_comment(row.id)
+                .then((res) => {
 
                 })
                 .catch((err) => {
                     console.log(err)
-                    Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                    Notification({ title: '删除评论失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
-        },
-        handleDelete(index, row) {
             console.log(index, row);
         }
     }

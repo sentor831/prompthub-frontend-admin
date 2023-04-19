@@ -33,8 +33,8 @@
                 </div>
             </div>
             <div class="block" style="text-align: center">
-                <el-pagination layout="prev, pager, next" :current-page="currentPage" :page-size="pageSize"
-                    @current-change="handleCurrentChange">
+                <el-pagination layout="prev, pager, next" :total="totalNum" :current-page="currentPage"
+                    :page-size="pageSize" @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
         </div>
@@ -61,21 +61,20 @@ export default {
         return {
             currentPage: 1,
             pageSize: 10,
-            tableData: tableData,
-            // table: {
-            //     data: [...tableData]
-            // }
+            // TODO 
+            totalNum: 1000,
+            tableData: [],
         }
     },
     mounted() {
-        // this.getWorks()
+        this.getWorks()
     },
     methods: {
         getWorks() {
             get_prompt_list(this.pageSize, this.currentPage)
                 .then((res) => {
                     this.tableData = res.data.prompt_list
-
+                    console.log(this.totalNum)
                 })
                 .catch((err) => {
                     console.log(err)

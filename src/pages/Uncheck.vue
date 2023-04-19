@@ -62,7 +62,7 @@ export default {
         return {
             currentPage: 1,
             pageSize: 10,
-            tableData: tableData,
+            tableData: [],
         }
     },
     mounted() {

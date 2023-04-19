@@ -40,6 +40,14 @@ export const get_prompt_list = (per_page, page_index) => {
     })
 }
 
+// 获取作品内容
+export const get_prompt = (id) => {
+    return axioss.request({
+        url: `api/prompt/get_prompt?id=${id}`,
+        method: 'get'
+    })
+}
+
 // 获取待审核作品列表
 export const get_audit_record_list = (per_page, page_index, status) => {
     return axioss.request({

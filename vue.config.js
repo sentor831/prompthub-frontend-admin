@@ -37,11 +37,18 @@ module.exports = {
     port: 8081,
     proxy: {
       '/api': {
-        target: 'http://47.93.21.142:8081',
+        target: 'http://47.93.21.142:8080',
         changeOrigin: true,
         // pathRewrite: {
         //   '^/api': ''
         // }
+      },
+      '/img': {
+        target: 'http://rsj4gl54w.hb-bkt.clouddn.com/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/img': ''
+        }
       }
     }
   }
