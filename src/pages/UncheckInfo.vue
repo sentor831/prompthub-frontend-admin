@@ -9,8 +9,7 @@
                         </template>
                         <div class="row">
                             <div class="col-6">
-                                <img src="https://sucai.suoluomei.cn/sucai_zs/images/20201027152322-15.jpg"
-                                    style="cursor: pointer; width: 100%" />
+                                <img :src="pic" style="cursor: pointer; width: 100%" />
                             </div>
                             <div class="col-6">
                                 <p>上传者</p>
@@ -22,7 +21,7 @@
                                 <p>上传时间</p>
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="card-text">{{ uploadtime }}</p>
+                                        <p class="card-text">{{ dispTime(uploadtime) }}</p>
                                     </div>
                                 </div>
                                 <p>prompt</p>
@@ -52,7 +51,10 @@
                                 <p>其他信息</p>
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="card-text">{{ others }}</p>
+                                        <p class="card-text">
+                                            <!-- <pre>{{ JSON.stringify(jsonObj, null, 4) }}</pre> -->
+                                        <pre>{{ jsonObj }}</pre>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +63,7 @@
                             <el-button type="success" style="width: 20vh" @click="handlePass()">通过</el-button>
                             <el-button type="danger" style="width: 20vh" @click="handleReject()">拒绝</el-button>
                         </div>
-                        <el-dialog :visible.sync="dialogVisible" center width="30%">
+                        <el-dialog :visible.sync="dialogVisible" center width="35%">
                             <div style="align-items: center; justify-content: center;">
                                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                                     <el-form-item prop="reason">
@@ -84,7 +86,9 @@
 </template>
 
 <script>
-import { audit_prompt } from '../api';
+import { audit_prompt, get_prompt } from '../api';
+import { formatTime } from '../api/utils';
+import { Notification } from 'element-ui'
 export default {
     name: 'workinfo',
     components: {
@@ -92,18 +96,15 @@ export default {
     },
     data() {
         return {
-            uploader: 'haha',
-            uploadtime: '2023.3.11 13:25:11',
-            prompt: 'funny, good, bad, building, tall, night, lights, amazing, what, strange, weird, boring, interesting, surprising',
-            model: 'DALL-E',
-            width: '120',
-            height: '240',
-            others: 'some json wwwww wwwwwwwww wwwwwwwwwww wwwwwwww,wwwwwwwwwwww,wwwwwwwwwwwww wwwwwwwwwww, wwwwwwwwwwww,wwwwwwwwwww wwwwwww,wwwwwwwwwwww,wwwwww,wwww,wwwwwwwwwww,wwwwwwww wwwwwww,wwwwwwww wwwwwwwwww,wwwwww wwwwwwww,wwwww wwwwwwwwww,wwwwwwww www',
-            tableData: [{
-                username: 'www',
-                content: '??',
-                time: '2023'
-            }],
+            pic: '',
+            uploader: '',
+            uploadtime: '',
+            prompt: '',
+            model: '',
+            width: '',
+            height: '',
+            others: '',
+            jsonObj: null,
             dialogVisible: false,
             ruleForm: {
                 reason: ''
@@ -113,20 +114,44 @@ export default {
                     { required: true, message: '请填写拒绝理由', trigger: 'blur' }
                 ]
             },
-            picid: -1,
+            recordid: -1,
+            picid: -1
         }
     },
     mounted() {
+        this.recordid = this.$route.query.recordid
         this.picid = this.$route.query.picid
+        this.getPicInfo()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
+        getPicInfo() {
+            get_prompt(this.picid)
+                .then((res) => {
+                    console.log(res)
+                    this.pic = res.data.prompt.picture
+                    this.uploader = res.data.prompt.uploader.nickname
+                    this.uploadtime = res.data.prompt.created_at
+                    this.prompt = res.data.prompt.prompt
+                    this.model = res.data.prompt.model
+                    this.width = res.data.prompt.width
+                    this.height = res.data.prompt.height
+                    this.others = res.data.prompt.prompt_attribute
+                    // this.jsonObj = JSON.parse(this.others);
+                    this.jsonObj = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
+                    console.log(this.jsonObj)
+                })
+        },
         handlePass() {
             audit_prompt({
-                id: this.picid,
+                id: this.recordid,
                 passed: true,
-                content: '通过'
+                content: ''
             })
                 .then((res) => {
+                    console.log(res)
                     this.$message({ type: 'success', message: '已通过' });
                     this.$router.push('/admin/uncheck')
                 })
@@ -143,9 +168,9 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     audit_prompt({
-                        id: this.picid,
+                        id: this.recordid,
                         passed: false,
-                        content: '不通过' + this.ruleForm.reason
+                        content: this.ruleForm.reason
                     })
                         .then((res) => {
                             this.$message({ type: 'success', message: '已拒绝' })

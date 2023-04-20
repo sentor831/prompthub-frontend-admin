@@ -41,9 +41,17 @@ export const get_prompt_list = (per_page, page_index) => {
 }
 
 // 获取作品内容
-export const get_prompt = (id) => {
+export const get_prompt = (prompt_id) => {
     return axioss.request({
-        url: `api/prompt/get_prompt?id=${id}`,
+        url: `api/admin/get_prompt?prompt_id=${prompt_id}`,
+        method: 'get'
+    })
+}
+
+// 只能作者自己看
+export const getEditingPrompt = (id) => {
+    return axioss.request({
+        url: `api/prompt/get_editing_prompt?id=${id}`,
         method: 'get'
     })
 }
@@ -60,7 +68,7 @@ export const get_audit_record_list = (per_page, page_index, status) => {
 export const audit_prompt = (params) => {
     return axioss.request({
         url: `/api/admin/audit_prompt`,
-        method: 'get',
+        method: 'post',
         data: params
     })
 }

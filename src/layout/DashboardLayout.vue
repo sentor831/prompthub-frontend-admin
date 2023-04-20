@@ -6,14 +6,18 @@
         <i class="nc-icon nc-chart-pie-35"></i>
         <p>Dashboard</p>
       </sidebar-link> -->
-      <sidebar-link to="/admin/users">
-        <i class="nc-icon nc-circle-09"></i>
-        <p>管理用户</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/works">
-        <i class="nc-icon nc-paper-2"></i>
-        <p>管理作品</p>
-      </sidebar-link>
+      <div @click="toManageUsers()">
+        <sidebar-link to="/admin/users">
+          <i class="nc-icon nc-circle-09"></i>
+          <p>管理用户</p>
+        </sidebar-link>
+      </div>
+      <div @click="toManageWorks()">
+        <sidebar-link to="/admin/works">
+          <i class="nc-icon nc-paper-2"></i>
+          <p>管理作品</p>
+        </sidebar-link>
+      </div>
       <sidebar-link to="/admin/uncheck">
         <i class="nc-icon nc-notes"></i>
         <p>待审核列表</p>
@@ -70,12 +74,37 @@ export default {
     DashboardContent,
     MobileMenu
   },
+  data() {
+    page: 1
+  },
   methods: {
     toggleSidebar() {
       if (this.$sidebar.showSidebar) {
         this.$sidebar.displaySidebar(false)
       }
-    }
+    },
+    toManageWorks() {
+      this.cookie.clearCookie('page')
+      if (this.$route.path === '/admin/works') {
+        this.$router.replace({
+          path: '/redirect',
+          query: {
+            path: encodeURI('/admin/works')
+          }
+        })
+      }
+    },
+    toManageUsers() {
+      this.cookie.clearCookie('page')
+      if (this.$route.path === '/admin/users') {
+        this.$router.replace({
+          path: '/redirect',
+          query: {
+            path: encodeURI('/admin/users')
+          }
+        })
+      }
+    },
   }
 }
 

@@ -20,6 +20,9 @@
                                 <el-table-column prop="user.nickname" label="上传者昵称">
                                 </el-table-column>
                                 <el-table-column prop="created_at" label="上传时间">
+                                    <template slot-scope="scope">
+                                        {{ dispTime(scope.row.prompt.created_at) }}
+                                    </template>
                                 </el-table-column>
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
@@ -45,6 +48,7 @@
 <script>
 import { get_audit_record_list } from '../api'
 import Card from 'src/components/Cards/Card.vue'
+import { formatTime } from '../api/utils'
 let tableData = [{
     id: 1,
     picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
@@ -69,10 +73,13 @@ export default {
         this.getUnchecks()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
         getUnchecks() {
-            // TODO: status是什么意思
             get_audit_record_list(this.pageSize, this.currentPage, 2)
                 .then((res) => {
+                    console.log(res)
                     this.tableData = res.data.audit_record_list
                     console.log(this.tableData)
                 })
@@ -87,7 +94,7 @@ export default {
         },
         handleLook(index, row) {
             console.log(index, row);
-            this.$router.push({ path: '/admin/uncheck/info', query: { picid: row.id } })
+            this.$router.push({ path: '/admin/uncheck/info', query: { picid: row.prompt.id, recordid: row.audit_record_id } })
         }
     }
 }

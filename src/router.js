@@ -20,49 +20,54 @@ import Works from 'src/pages/Works.vue'
 import Uncheck from 'src/pages/Uncheck.vue'
 import WorkInfo from 'src/pages/WorkInfo.vue'
 import UncheckInfo from 'src/pages/UncheckInfo.vue'
+import Redirect from 'src/components/Redirect.vue'
 
 Vue.use(Router);
 
 export default new Router({
   linkExactActiveClass: 'active',
-  routes : [
-  {
-    path: '/',
-    name: "login",
-    component: Login,
-  },
-  {
-    path: '/admin',
-    component: DashboardLayout,
-    redirect: '/admin/users',
-    children: [
-      {
-        path: 'users',
-        name: 'Users',
-        component: Users
-      },
-      {
-        path: 'works',
-        name: 'Works',
-        component: Works,
-      },
-      {
-        path: 'works/info',
-        name: 'Info',
-        component: WorkInfo
-      },
-      {
-        path: 'uncheck',
-        name: 'Uncheck',
-        component: Uncheck
-      },
-      {
-        path: 'uncheck/info',
-        name: 'UncheckInfo',
-        component: UncheckInfo
-      }
-    ]
-  },
-  { path: '*', component: NotFound }
+  routes: [
+    {
+      path: '/',
+      name: "login",
+      component: Login,
+    },
+    {
+      path: '/admin',
+      component: DashboardLayout,
+      redirect: '/admin/users',
+      children: [
+        {
+          path: 'users',
+          name: 'Users',
+          component: Users
+        },
+        {
+          path: 'works',
+          name: 'Works',
+          component: Works,
+        },
+        {
+          path: 'works/info',
+          name: 'Info',
+          component: WorkInfo
+        },
+        {
+          path: 'uncheck',
+          name: 'Uncheck',
+          component: Uncheck
+        },
+        {
+          path: 'uncheck/info',
+          name: 'UncheckInfo',
+          component: UncheckInfo
+        }
+      ]
+    },
+    {
+      path: '/redirect',
+      component: Redirect
+    },
+    { path: '*', component: NotFound }
   ]
 });

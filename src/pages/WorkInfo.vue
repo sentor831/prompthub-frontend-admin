@@ -21,7 +21,7 @@
                                 <p>上传时间</p>
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="card-text">{{ uploadtime }}</p>
+                                        <p class="card-text">{{ dispTime(uploadtime) }}</p>
                                     </div>
                                 </div>
                                 <p>prompt</p>
@@ -51,18 +51,21 @@
                                 <p>其他信息</p>
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="card-text">{{ others }}</p>
+                                        <p class="card-text">
+                                            <!-- <pre>{{ JSON.stringify(jsonObj, null, 4) }}</pre> -->
+                                        <pre>{{ jsonObj }}</pre>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="comments col" style="margin-top: 1%;">
-                            <div class="row" style="width: 100%;">
-                                <el-button type="danger">批量删除</el-button>
-                                <el-input class="input" placeholder="关键字" v-model="keyword"
+                            <div class="row" style="width: 100%; margin-left: 1vw;">
+                                <el-button type="danger" @click="handleDeleteArray()">批量删除</el-button>
+                                <!-- <el-input class="input" placeholder="关键字" v-model="keyword"
                                     style="margin-left: 3em; width: 30%;">
                                     <el-button slot="append" icon="el-icon-search"></el-button>
-                                </el-input>
+                                </el-input> -->
                             </div>
                             <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark"
                                 style="width: 100%; margin-top: 2em; margin-left: 0"
@@ -74,7 +77,9 @@
                                 <el-table-column prop="content" label="评论内容" width="550" show-overflow-tooltip>
                                 </el-table-column>
                                 <el-table-column prop="created_at" label="评论时间">
-                                    <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
+                                    <template slot-scope="scope">
+                                        {{ dispTime(scope.row.created_at) }}
+                                    </template>
                                 </el-table-column>
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
@@ -96,6 +101,7 @@
 import ElementUI from 'element-ui';
 import { get_comment_list, get_prompt, delete_comment } from '../api';
 import { Notification } from 'element-ui'
+import { formatTime } from '../api/utils';
 export default {
     name: 'workinfo',
     components: {
@@ -105,15 +111,17 @@ export default {
         return {
             pic: '',
             uploaderId: -1,
-            uploader: 'haha',
-            uploadtime: '2023.3.11 13:25:11',
-            prompt: 'funny, good, bad, building, tall, night, lights, amazing, what, strange, weird, boring, interesting, surprising',
-            model: 'DALL-E',
-            width: '120',
-            height: '240',
-            others: 'some json wwwww wwwwwwwww wwwwwwwwwww wwwwwwww,wwwwwwwwwwww,wwwwwwwwwwwww wwwwwwwwwww, wwwwwwwwwwww,wwwwwwwwwww wwwwwww,wwwwwwwwwwww,wwwwww,wwww,wwwwwwwwwww,wwwwwwww wwwwwww,wwwwwwww wwwwwwwwww,wwwwww wwwwwwww,wwwww wwwwwwwwww,wwwwwwww www',
+            uploader: '',
+            uploadtime: '',
+            prompt: '',
+            model: '',
+            width: '',
+            height: '',
+            others: '',
+            jsonObj: null,
             tableData: [],
             picid: -1,
+            keyword: '',
         }
     },
     mounted() {
@@ -121,6 +129,9 @@ export default {
         this.getPicInfo()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
         getPicInfo() {
             // TODO
             get_prompt(this.picid)
@@ -130,12 +141,13 @@ export default {
                     this.uploaderId = res.data.prompt.uploader.id
                     this.uploader = res.data.prompt.uploader.nickname
                     this.uploadtime = res.data.prompt.created_at
-                    this.hasFollowed = res.data.is_following
                     this.prompt = res.data.prompt.prompt
                     this.model = res.data.prompt.model
                     this.width = res.data.prompt.width
                     this.height = res.data.prompt.height
                     this.others = res.data.prompt.prompt_attribute
+                    // this.jsonObj = JSON.parse(this.others);
+                    this.jsonObj = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
                     get_comment_list(this.picid, 10, 1)
                         .then((res) => {
                             this.tableData = res.data.comment_list
@@ -169,6 +181,13 @@ export default {
                     Notification({ title: '删除评论失败', message: err.response.data.msg, type: 'error', duration: 2000 })
                 })
             console.log(index, row);
+        },
+        handleDeleteArray() {
+            // const length = this.multipleSelection.length;
+
+            // for (let i = 0; i < length; i++) {
+            //     this.delarr.push(this.multipleSelection[i].id);
+            // }
         }
     }
 }

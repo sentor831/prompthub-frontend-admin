@@ -20,6 +20,9 @@
                                 <el-table-column prop="uploader.nickname" label="上传者昵称">
                                 </el-table-column>
                                 <el-table-column prop="created_at" label="上传时间">
+                                    <template slot-scope="scope">
+                                        {{ dispTime(scope.row.created_at) }}
+                                    </template>
                                 </el-table-column>
                                 <el-table-column label="操作">
                                     <template slot-scope="scope">
@@ -42,15 +45,10 @@
 </template>
 
 <script>
-import { get_prompt_list } from '../api';
+import { get_prompt_list, get_audit_record_list } from '../api';
+import { formatTime } from '../api/utils';
 import Card from 'src/components/Cards/Card.vue'
-
-let tableData = [{
-    id: 1,
-    picture: 'https://sucai.suoluomei.cn/sucai_zs/images/20201027152321-13.jpg',
-    uploader: { nickname: 'hyf' },
-    created_at: '2023.01.02 12:34:56',
-}]
+import { Notification } from 'element-ui'
 
 export default {
     name: 'works',
@@ -61,21 +59,30 @@ export default {
         return {
             currentPage: 1,
             pageSize: 10,
-            // TODO 
             totalNum: 1000,
             tableData: [],
         }
     },
     mounted() {
+        if (this.cookie.getCookie('page') !== null) {
+            this.currentPage = eval(this.cookie.getCookie('page'))
+            this.cookie.clearCookie('page')
+        } else {
+            this.currentPage = 1
+        }
         this.getWorks()
     },
     methods: {
+        dispTime(t, detailed) {
+            return formatTime(t, detailed)
+        },
         getWorks() {
             get_prompt_list(this.pageSize, this.currentPage)
+                // get_audit_record_list(this.pageSize, this.currentPage)
                 .then((res) => {
                     this.tableData = res.data.prompt_list
+                    // this.tableData = res.data.audit_record_list
                     this.totalNum = res.data.prompt_num
-                    console.log(this.totalNum)
                 })
                 .catch((err) => {
                     console.log(err)
@@ -88,6 +95,9 @@ export default {
         },
         handleLook(index, row) {
             console.log(index, row.id);
+            this.cookie.setCookie({
+                page: this.currentPage
+            }, 1)
             this.$router.push({ path: '/admin/works/info', query: { picid: row.id } })
         }
     }
