@@ -6,14 +6,10 @@
           <card class="card-plain">
             <template slot="header">
               <h4 class="card-title">管理用户</h4>
-              <!-- <p class="card-category">全部用户列表</p> -->
             </template>
-            <!-- <div class="table-responsive"> -->
-            <!-- <l-table class="table-hover" :columns="table.columns" :data="table.data">
-              </l-table> -->
-            <!-- </div> -->
             <template>
-              <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" stripe>
+              <!-- <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" stripe> -->
+              <el-table :data="tableData" stripe>
                 <el-table-column prop="id" label="ID" width="100">
                 </el-table-column>
                 <el-table-column prop="avatar" label="头像" width="200">
@@ -94,12 +90,8 @@ export default {
     return {
       currentPage: 1,
       pageSize: 10,
-      // TODO 
       totalNum: 100,
       tableData: [],
-      // table: {
-      //   data: [...tableData]
-      // },
     }
   },
   mounted() {

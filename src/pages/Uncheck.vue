@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div class="block" style="text-align: center">
-                <el-pagination layout="prev, pager, next" :current-page="currentPage" :page-size="pageSize"
-                    @current-change="handleCurrentChange">
+                <el-pagination layout="prev, pager, next" :total="totalNum" :current-page="currentPage"
+                    :page-size="pageSize" @current-change="handleCurrentChange">
                 </el-pagination>
             </div>
         </div>
@@ -67,9 +67,16 @@ export default {
             currentPage: 1,
             pageSize: 10,
             tableData: [],
+            totalNum: 10,
         }
     },
     mounted() {
+        if (this.cookie.getCookie('page') !== null) {
+            this.currentPage = eval(this.cookie.getCookie('page'))
+            this.cookie.clearCookie('page')
+        } else {
+            this.currentPage = 1
+        }
         this.getUnchecks()
     },
     methods: {
@@ -81,7 +88,7 @@ export default {
                 .then((res) => {
                     console.log(res)
                     this.tableData = res.data.audit_record_list
-                    console.log(this.tableData)
+                    this.totalNum = res.data.audit_record_num
                 })
                 .catch((err) => {
                     console.log(err)
@@ -94,6 +101,9 @@ export default {
         },
         handleLook(index, row) {
             console.log(index, row);
+            this.cookie.setCookie({
+                page: this.currentPage
+            }, 1)
             this.$router.push({ path: '/admin/uncheck/info', query: { picid: row.prompt.id, recordid: row.audit_record_id } })
         }
     }

@@ -59,9 +59,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="comments col" style="margin-top: 1%;">
+                        <div class="comments col" style="margin-top: 1%;" v-if="status === 0">
                             <div class="row" style="width: 100%; margin-left: 1vw;">
-                                <el-button type="danger" @click="handleDeleteArray()">批量删除</el-button>
+                                <!-- <el-button type="danger" @click="handleDeleteArray()">批量删除</el-button> -->
                                 <!-- <el-input class="input" placeholder="关键字" v-model="keyword"
                                     style="margin-left: 3em; width: 30%;">
                                     <el-button slot="append" icon="el-icon-search"></el-button>
@@ -110,7 +110,6 @@ export default {
     data() {
         return {
             pic: '',
-            uploaderId: -1,
             uploader: '',
             uploadtime: '',
             prompt: '',
@@ -121,11 +120,14 @@ export default {
             jsonObj: null,
             tableData: [],
             picid: -1,
-            keyword: '',
+            recordid: -1,
+            // keyword: '',
+            status: 0
         }
     },
     mounted() {
         this.picid = this.$route.query.picid;
+        this.recordid = this.$route.query.recordid
         this.getPicInfo()
     },
     methods: {
@@ -133,12 +135,10 @@ export default {
             return formatTime(t, detailed)
         },
         getPicInfo() {
-            // TODO
             get_prompt(this.picid)
                 .then((res) => {
                     console.log(res)
                     this.pic = res.data.prompt.picture
-                    this.uploaderId = res.data.prompt.uploader.id
                     this.uploader = res.data.prompt.uploader.nickname
                     this.uploadtime = res.data.prompt.created_at
                     this.prompt = res.data.prompt.prompt
@@ -148,18 +148,19 @@ export default {
                     this.others = res.data.prompt.prompt_attribute
                     // this.jsonObj = JSON.parse(this.others);
                     this.jsonObj = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
-                    get_comment_list(this.picid, 10, 1)
-                        .then((res) => {
-                            this.tableData = res.data.comment_list
+                    this.status = res.data.prompt.upload_status
+                    if (this.status === 0) {
+                        get_comment_list(this.picid, 10, 1)
+                            .then((res) => {
+                                this.tableData = res.data.comment_list
 
-                        })
-                        .catch((err) => {
-                            console.log(err)
-                            Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
-                        })
-
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                                Notification({ title: '获取评论列表失败', message: err.response.data.msg, type: 'error', duration: 2000 })
+                            })
+                    }
                 })
-
         },
         handleDelete(index, row) {
             delete_comment({
@@ -182,13 +183,13 @@ export default {
                 })
             console.log(index, row);
         },
-        handleDeleteArray() {
-            // const length = this.multipleSelection.length;
+        // handleDeleteArray() {
+        // const length = this.multipleSelection.length;
 
-            // for (let i = 0; i < length; i++) {
-            //     this.delarr.push(this.multipleSelection[i].id);
-            // }
-        }
+        // for (let i = 0; i < length; i++) {
+        //     this.delarr.push(this.multipleSelection[i].id);
+        // }
+        // }
     }
 }
 </script>

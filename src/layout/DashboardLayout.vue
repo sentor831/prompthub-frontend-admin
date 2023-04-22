@@ -20,7 +20,7 @@
       </div>
       <sidebar-link to="/admin/uncheck">
         <i class="nc-icon nc-notes"></i>
-        <p>待审核列表</p>
+        <p>审核作品</p>
       </sidebar-link>
       <!-- <sidebar-link to="/admin/user">
         <i class="nc-icon nc-circle-09"></i>
