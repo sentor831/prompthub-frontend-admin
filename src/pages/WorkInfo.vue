@@ -167,7 +167,7 @@ export default {
                 comment_id: row.id
             })
                 .then((res) => {
-                    get_comment_list(this.picid, 10, 1)
+                    get_comment_list(this.picid, 999, 1)
                         .then((res) => {
                             this.tableData = res.data.comment_list
 
