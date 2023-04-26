@@ -136,8 +136,10 @@ export default {
                     this.uploadtime = res.data.prompt.created_at
                     this.prompt = res.data.prompt.prompt
                     this.model = res.data.prompt.model
-                    this.width = res.data.prompt.width
-                    this.height = res.data.prompt.height
+                    let img = new Image()
+                    img.src = res.data.prompt.picture
+                    this.width = img.width
+                    this.height = img.height
                     this.others = res.data.prompt.prompt_attribute
                     // this.jsonObj = JSON.parse(this.others);
                     this.jsonObj = eval('[' + res.data.prompt.prompt_attribute + ']')[0]
