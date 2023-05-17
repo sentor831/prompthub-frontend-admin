@@ -1,6 +1,6 @@
 import Cookies from "js-cookie"
-export const TOKEN_KEY = 'token'
-export const REFRESH_TOKEN_KEY = 'refresh-token'
+export const TOKEN_KEY = 'admin-token'
+export const REFRESH_TOKEN_KEY = 'admin-refresh-token'
 export const cookieExpires = 1
 
 export const setToken = (token) => {
